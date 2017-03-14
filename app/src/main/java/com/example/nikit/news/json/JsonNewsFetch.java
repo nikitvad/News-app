@@ -18,7 +18,7 @@ import java.net.URL;
  * Created by nikit on 12.03.2017.
  */
 
-public class JsonParser {
+public class JsonNewsFetch {
     private String jsonString;
 
 

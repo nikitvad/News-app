@@ -1,7 +1,6 @@
-package com.example.nikit.news;
+package com.example.nikit.news.ui.activities;
 
 import android.os.AsyncTask;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +9,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.nikit.news.json.JsonParser;
+import com.example.nikit.news.Pager;
+import com.example.nikit.news.R;
+import com.example.nikit.news.json.JsonNewsFetch;
 
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
@@ -32,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new LoadAsyncTask().execute();
             }
         });
 
@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
 
     }
-
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         @Override
         protected Void doInBackground(Void... voids) {
-            JsonParser parser = new JsonParser();
+            JsonNewsFetch parser = new JsonNewsFetch();
             parser.loadJsonString("http://newsapi.org/v1/articles?source=techcrunch&apiKey=6398112802324ebe8cf7caaf032514c1");
             return null;
         }
