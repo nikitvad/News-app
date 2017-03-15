@@ -1,4 +1,4 @@
-package com.example.nikit.news.ui.rvAdapters;
+package com.example.nikit.news.ui.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.example.nikit.news.R;
 import com.example.nikit.news.entities.Article;
-import com.example.nikit.news.entities.NewsEntity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -19,21 +18,24 @@ import java.util.ArrayList;
  */
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHolder> {
-    private ArrayList<Article> articles;
+    private final ArrayList<Article> articles;
 
 
-    public NewsAdapter(NewsEntity newsEntity) {
-        articles = newsEntity.getArticles();
+    public NewsAdapter(){
+        articles = new ArrayList<>();
     }
+    //public NewsAdapter(NewsEntity newsEntity) {
+    //    articles = newsEntity.getArticles();
+    //}
 
-    public NewsAdapter(ArrayList<Article> articles){
-        this.articles = articles;
-    }
+   // public NewsAdapter(ArrayList<Article> articles){
+   //     this.articles = articles;
+    // }
 
     @Override
     public NewsAdapter.ArticleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new ArticleViewHolder(inflater.inflate(R.layout.article_item_with_image, parent, false));
+        return new ArticleViewHolder(inflater.inflate(R.layout.article_item, parent, false));
     }
 
     @Override
@@ -48,6 +50,14 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHol
         return  articles.size();
     }
 
+    public boolean swapData(ArrayList<Article> newDataList){
+        if(newDataList!=null && newDataList.size()>0){
+            this.articles.clear();
+            this.articles.addAll(newDataList);
+            this.notifyDataSetChanged();
+            return true;
+        } else return false;
+    }
 
     class ArticleViewHolder extends RecyclerView.ViewHolder{
 
@@ -65,7 +75,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHol
 
         public void bindArticle(Article article){
             tvArticleTitle.setText(article.getTitle());
-            tvArticleDesc.setText(article.getTitle());
+            tvArticleDesc.setText(article.getDescription());
             Picasso.with(itemView.getContext()).load(article.getUrlToImage()).into(ivArticleImage);
         }
     }
