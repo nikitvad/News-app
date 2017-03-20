@@ -64,6 +64,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHol
         private TextView tvArticleTitle;
         private ImageView ivArticleImage;
         private TextView tvArticleDesc;
+        private TextView tvSourceId;
 
         public ArticleViewHolder(View itemView) {
             super(itemView);
@@ -71,6 +72,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHol
             tvArticleTitle = (TextView)itemView.findViewById(R.id.tv_article_title);
             tvArticleDesc = (TextView)itemView.findViewById(R.id.tv_article_desc);
             ivArticleImage = (ImageView)itemView.findViewById(R.id.iv_article_image);
+            tvSourceId = (TextView)itemView.findViewById(R.id.tv_source_id);
         }
 
         public void bindArticle(Article article){
