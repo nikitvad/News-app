@@ -12,18 +12,20 @@ import com.example.nikit.news.entities.Article;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by nikit on 14.03.2017.
  */
 
-public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHolder> {
+public class NewsRvAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHolder> {
     private final ArrayList<Article> articles;
 
 
-    public NewsAdapter(){
+    public NewsRvAdapter(){
         articles = new ArrayList<>();
     }
+
     //public NewsAdapter(NewsEntity newsEntity) {
     //    articles = newsEntity.getArticles();
     //}
@@ -59,6 +61,15 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHol
         } else return false;
     }
 
+    public boolean addArticles(ArrayList<Article> newArticles){
+        if(newArticles.size()>0){
+            articles.addAll(newArticles);
+            notifyDataSetChanged();
+            return true;
+        }
+        return false;
+    }
+
     class ArticleViewHolder extends RecyclerView.ViewHolder{
 
         private TextView tvArticleTitle;
@@ -79,6 +90,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHol
             tvArticleTitle.setText(article.getTitle());
             tvArticleDesc.setText(article.getDescription());
             Picasso.with(itemView.getContext()).load(article.getUrlToImage()).into(ivArticleImage);
+            //tvSourceId.setText(article.getResourceId());
         }
     }
 }

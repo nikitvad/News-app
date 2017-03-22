@@ -17,14 +17,14 @@ import java.util.ArrayList;
  * Created by nikit on 15.03.2017.
  */
 
-public class SourcesAdapter extends RecyclerView.Adapter<SourcesAdapter.SourceViewHolder> {
+public class SourcesRvAdapter extends RecyclerView.Adapter<SourcesRvAdapter.SourceViewHolder> {
     private final ArrayList<Source> sources;
 
-    public SourcesAdapter() {
+    public SourcesRvAdapter() {
         sources = new ArrayList<>();
     }
 
-    public SourcesAdapter(ArrayList<Source> sources) {
+    public SourcesRvAdapter(ArrayList<Source> sources) {
         this.sources = sources;
     }
 

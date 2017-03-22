@@ -1,16 +1,27 @@
 package com.example.nikit.news.entities;
 
+import com.google.gson.annotations.Expose;
+
 /**
  * Created by nikit on 12.03.2017.
  */
 
-public class Article {
+public class Article_temp_name {
     private String author;
     private String title;
     private String description;
     private String url;
     private String urlToImage;
     private String publishedAt;
+    private String sourceId;
+
+    public String getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
+    }
 
     public String getAuthor() {
         return author;
