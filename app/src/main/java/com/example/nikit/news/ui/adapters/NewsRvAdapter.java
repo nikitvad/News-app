@@ -8,7 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.nikit.news.R;
-import com.example.nikit.news.entities.Article;
+//import com.example.nikit.news.entities.Article;
+import com.example.nikit.news.entities.NewsEntity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -18,24 +19,16 @@ import java.util.HashMap;
  * Created by nikit on 14.03.2017.
  */
 
-public class NewsRvAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHolder> {
-    private final ArrayList<Article> articles;
+public class NewsRvAdapter extends RecyclerView.Adapter<NewsRvAdapter.ArticleViewHolder> {
+    private final ArrayList<NewsEntity.Article> articles;
 
 
     public NewsRvAdapter(){
         articles = new ArrayList<>();
     }
 
-    //public NewsAdapter(NewsEntity newsEntity) {
-    //    articles = newsEntity.getArticles();
-    //}
-
-   // public NewsAdapter(ArrayList<Article> articles){
-   //     this.articles = articles;
-    // }
-
     @Override
-    public NewsAdapter.ArticleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NewsRvAdapter.ArticleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         return new ArticleViewHolder(inflater.inflate(R.layout.article_item, parent, false));
     }
@@ -52,7 +45,7 @@ public class NewsRvAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewH
         return  articles.size();
     }
 
-    public boolean swapData(ArrayList<Article> newDataList){
+    public boolean swapData(ArrayList<NewsEntity.Article> newDataList){
         if(newDataList!=null && newDataList.size()>0){
             this.articles.clear();
             this.articles.addAll(newDataList);
@@ -61,7 +54,7 @@ public class NewsRvAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewH
         } else return false;
     }
 
-    public boolean addArticles(ArrayList<Article> newArticles){
+    public boolean addArticles(ArrayList<NewsEntity.Article> newArticles){
         if(newArticles.size()>0){
             articles.addAll(newArticles);
             notifyDataSetChanged();
@@ -86,11 +79,11 @@ public class NewsRvAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewH
             tvSourceId = (TextView)itemView.findViewById(R.id.tv_source_id);
         }
 
-        public void bindArticle(Article article){
+        public void bindArticle(NewsEntity.Article article){
             tvArticleTitle.setText(article.getTitle());
             tvArticleDesc.setText(article.getDescription());
             Picasso.with(itemView.getContext()).load(article.getUrlToImage()).into(ivArticleImage);
-            //tvSourceId.setText(article.getResourceId());
+            tvSourceId.setText(article.getSourceId());
         }
     }
 }

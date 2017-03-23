@@ -76,7 +76,7 @@ public class SourcesRvAdapter extends RecyclerView.Adapter<SourcesRvAdapter.Sour
             tvSourceDesc.setText(source.getDescription());
             tvSourceCategory.setText(source.getCategory());
             Picasso.with(itemView.getContext()).load(source.getUrlsToLogos()
-                        .getMedium()).into(ivSourceLogo);
+                        .getSmall()).into(ivSourceLogo);
         }
     }
 }

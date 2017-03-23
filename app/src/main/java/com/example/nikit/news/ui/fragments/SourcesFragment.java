@@ -14,9 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.example.nikit.news.R;
-import com.example.nikit.news.entities.Source;
+import com.example.nikit.news.ui.adapters.SourcesRvAdapter;
 import com.example.nikit.news.util.JsonUtil;
-import com.example.nikit.news.ui.adapters.SourcesAdapter;
 
 import java.util.ArrayList;
 
@@ -25,10 +24,10 @@ import java.util.ArrayList;
  */
 public class SourcesFragment extends Fragment {
     private RecyclerView rvSources;
-    private final SourcesAdapter sourcesAdapter;
+    private final SourcesRvAdapter sourcesAdapter;
 
     public SourcesFragment() {
-        sourcesAdapter = new SourcesAdapter();
+        sourcesAdapter = new SourcesRvAdapter();
         // Required empty public constructor
     }
 

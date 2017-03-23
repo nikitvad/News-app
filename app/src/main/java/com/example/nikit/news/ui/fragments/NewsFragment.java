@@ -19,16 +19,16 @@ import android.widget.ProgressBar;
 import com.example.nikit.news.HidingScrollListener;
 import com.example.nikit.news.R;
 import com.example.nikit.news.util.JsonUtil;
-import com.example.nikit.news.ui.adapters.NewsAdapter;
+import com.example.nikit.news.ui.adapters.NewsRvAdapter;
 import com.example.nikit.news.util.ViewUtil;
 
 
 public class NewsFragment extends Fragment {
     private RecyclerView rvArticles;
-    private final NewsAdapter newsAdapter;
+    private final NewsRvAdapter newsAdapter;
 
     public NewsFragment() {
-       newsAdapter = new NewsAdapter();
+       newsAdapter = new NewsRvAdapter();
         // Required empty public constructor
     }
 

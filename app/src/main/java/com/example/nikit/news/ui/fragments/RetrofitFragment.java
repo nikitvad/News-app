@@ -1,6 +1,7 @@
 package com.example.nikit.news.ui.fragments;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,29 +12,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.example.nikit.news.Constants;
 import com.example.nikit.news.R;
-import com.example.nikit.news.api.ApiClient;
-import com.example.nikit.news.entities.Article;
 import com.example.nikit.news.entities.NewsEntity;
-import com.example.nikit.news.ui.adapters.NewsAdapter;
+import com.example.nikit.news.ui.adapters.NewsRvAdapter;
+import com.example.nikit.news.util.NetworkUtil;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class RetrofitFragment extends Fragment {
     private RecyclerView rvNews;
-    private NewsAdapter newsAdapter;
+    private NewsRvAdapter newsRvAdapter;
     private Button btTouch;
+    HashMap<String, String> resourceSortBy = new HashMap<>();
     public RetrofitFragment() {
         // Required empty public constructor
     }
@@ -50,36 +47,56 @@ public class RetrofitFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rvNews = (RecyclerView)view.findViewById(R.id.rv_articles);
-        newsAdapter = new NewsAdapter();
-        rvNews.setAdapter(newsAdapter);
+        newsRvAdapter = new NewsRvAdapter();
+        rvNews.setAdapter(newsRvAdapter);
         rvNews.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         btTouch = (Button)view.findViewById(R.id.bt_touch);
 
+        resourceSortBy.put("abc-news-au", "top");
+        resourceSortBy.put("bild", "top");
+
+
         btTouch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                ApiClient.getInstance().getNewsEntity("the-next-web", "latest", Constants.API_KEY).enqueue(new Callback<NewsEntity>() {
-                    @Override
-                    public void onResponse(Call<NewsEntity> call, Response<NewsEntity> response) {
-                        if(response.isSuccessful()){
-                            if(response.body()!=null){
-                                newsAdapter.swapData(response.body().getArticles());
-                            }else{
-                                Toast.makeText(getContext(), "wrong request", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<NewsEntity> call, Throwable t) {
-                        Toast.makeText(getContext(), "fail", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                new loadNewsAsyncTask().execute();
             }
         });
 
+    }
 
+
+    class loadNewsAsyncTask extends AsyncTask<Void, NewsEntity, Void>{
+        private HashMap<String, NewsEntity> newsEntityHashMap;
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            resourceSortBy.put("abc-news-au", "top");
+            resourceSortBy.put("bild", "top");
+            resourceSortBy.put("associated-press", "top");
+            resourceSortBy.put("bbc-sport", "top");
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            Iterator<Map.Entry<String, String>> iterator = resourceSortBy.entrySet().iterator();
+            while(iterator.hasNext()){
+                Map.Entry<String, String> pair = iterator.next();
+                NewsEntity entity = NetworkUtil.getNewsFromSource(pair.getKey(), pair.getValue());
+
+                Log.d("entity", entity.toString());
+                publishProgress(entity);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(NewsEntity... values) {
+            newsRvAdapter.addArticles(values[0].getArticles());
+        }
     }
 }

@@ -96,45 +96,4 @@ public class JsonUtil {
         }else return null;
     }
 
-
-    /*
-    private class LoadJsonAsyncTask extends AsyncTask<String, Void, Void>{
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            NewsEntity news = getNews();
-           Log.d("jsonString", news.toString());
-        }
-
-        @Override
-        protected Void doInBackground(String... strings) {
-
-            try {
-                URL url = new URL(strings[0]);
-                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.connect();
-                InputStream is = connection.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-
-                StringBuffer buffer = new StringBuffer();
-                String line;
-
-                while((line=reader.readLine())!=null){
-                    buffer.append(line);
-                }
-                jsonString = buffer.toString();
-                Log.d("jsonString", jsonString);
-
-            }catch(MalformedURLException e){
-                e.printStackTrace();
-            }catch (IOException e){
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-    }
-    */
 }

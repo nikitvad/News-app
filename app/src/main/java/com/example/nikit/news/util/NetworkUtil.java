@@ -1,21 +1,14 @@
 package com.example.nikit.news.util;
 
 import android.content.Context;
-import android.widget.Toast;
+import android.support.annotation.Nullable;
 
 import com.example.nikit.news.Constants;
 import com.example.nikit.news.api.ApiClient;
-import com.example.nikit.news.api.ApiService;
-import com.example.nikit.news.entities.Article;
 import com.example.nikit.news.entities.NewsEntity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.io.IOException;
 
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
@@ -29,39 +22,40 @@ public class NetworkUtil {
         this.context = context;
     }
 
-    public HashMap<String, NewsEntity> getArticlesFromResources(final HashMap<String, String> resourceSortBy){
-        final HashMap<String, NewsEntity> result;
+    public static NewsEntity getNewsFromSource(String sourceId, @Nullable String sortBy){
+        try {
+            Response<NewsEntity> response = ApiClient.getInstance()
+                    .getNewsEntity(sourceId, sortBy, Constants.API_KEY).execute();
 
-        ApiService client = ApiClient.getInstance();
-
-        if(resourceSortBy.size()>0){
-            result = new HashMap<>();
-
-            Iterator<Map.Entry<String, String>> iterator = resourceSortBy.entrySet().iterator();
-            while (iterator.hasNext()){
-                final Map.Entry<String, String> pair = iterator.next();
-                client.getNewsEntity(pair.getKey(), pair.getValue(), Constants.API_KEY)
-                        .enqueue(new Callback<NewsEntity>() {
-                            @Override
-                            public void onResponse(Call<NewsEntity> call, Response<NewsEntity> response) {
-                                if(response.isSuccessful()){
-                                    if(response.body()!=null){
-                                        result.put(pair.getKey(), response.body());
-                                    }
-                                }else{
-                                    Toast.makeText(context, "Request error", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<NewsEntity> call, Throwable t) {
-                                Toast.makeText(context, "Connection error", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+            if(response.isSuccessful() && response.body()!=null){
+                for(NewsEntity.Article article: response.body().getArticles()){
+                    article.setSourceId(sourceId);
+                }
+                return response.body();
             }
-
+        }catch (IOException e){
+            e.printStackTrace();
         }
+        return null;
+    }
+
+/*
+    public HashMap<String, NewsEntity> getArticlesByCategory(String category){
+        ArrayList<Source> sources = new ArrayList<>();
+                try {
+                    Response<Source> response = ApiClient.getInstance().getSources(category, null, null).execute();
+                    if(response.isSuccessful() && response!=null){
+                        sources.add(response.body());
+                    }
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
 
         return null;
     }
+    */
+
+
+
+
 }

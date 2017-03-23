@@ -15,11 +15,13 @@ import android.widget.Toast;
 import com.example.nikit.news.Constants;
 import com.example.nikit.news.R;
 import com.example.nikit.news.api.ApiClient;
-import com.example.nikit.news.entities.Article;
+//import com.example.nikit.news.entities.Article;
+import com.example.nikit.news.entities.NewsEntity;
 import com.example.nikit.news.ui.adapters.PagerAdapter;
 import com.example.nikit.news.ui.fragments.NewsFragment;
 import com.example.nikit.news.ui.fragments.RetrofitFragment;
 import com.example.nikit.news.ui.fragments.SourcesFragment;
+import com.example.nikit.news.ui.fragments.SourcesFromDb;
 
 import java.util.ArrayList;
 
@@ -52,30 +54,25 @@ public class MainActivity extends AppCompatActivity{
 
 
 
-
-
-
-
-
-        ApiClient.getInstance().articles("the-next-web", "latest", Constants.API_KEY).enqueue(new Callback<ArrayList<Article>>() {
+        ApiClient.getInstance().getNewsEntity("the-next-web", "latest", Constants.API_KEY).enqueue(new Callback<NewsEntity>() {
             @Override
-            public void onResponse(Call<ArrayList<Article>> call, Response<ArrayList<Article>> response) {
+            public void onResponse(Call<NewsEntity> call, Response<NewsEntity> response) {
 
                 Log.d("retrofit", "jkhkjhkjhkj"+call.toString());
                 Log.d("retrofit", "fail");
                 if(response.isSuccessful()){
-                    if(response.body().size()<1){
-                        Log.d("retrofit", "big ass");
-                    }
+
+                    /*
                     ArrayList<Article> articles = response.body();
                     for(Article article: articles){
                         Log.d("retrofit", article.toString());
                     }
+                    */
                 }
             }
 
             @Override
-            public void onFailure(Call<ArrayList<Article>> call, Throwable t) {
+            public void onFailure(Call<NewsEntity> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_SHORT).show();
                 Log.d("retrofit", call.toString());
                 t.printStackTrace();
@@ -94,6 +91,10 @@ public class MainActivity extends AppCompatActivity{
 
         //fragment for testing retrofit
         pagerAdapter.addFragment(new RetrofitFragment(), "Retrofit");
+
+        //fragment for testing ormlite database
+        pagerAdapter.addFragment(new SourcesFromDb(), "DB");
+
         viewPager.setAdapter(pagerAdapter);
     }
 }
