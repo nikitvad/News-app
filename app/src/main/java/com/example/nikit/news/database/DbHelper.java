@@ -44,7 +44,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private ContentValues getContentValuesFormSource(Source source){
         ContentValues values = new ContentValues();
-        values.put(SourceTable.COLUMN_NAME_SOURCE_ID, source.getId());
+        values.put(SourceTable._ID, source.getId());
         values.put(SourceTable.COLUMN_NAME_NAME, source.getName());
         values.put(SourceTable.COLUMN_NAME_DESCRIPTION, source.getDescription());
         values.put(SourceTable.COLUMN_NAME_LANGUAGE, source.getLanguage());
@@ -53,6 +53,8 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put(SourceTable.COLUMN_NAME_SORT_BY_AVAILABLE, Util.getStringFromArrayOfString(source.getSortBysAvailable()));
         values.put(SourceTable.COLUMN_NAME_URL, source.getUrl());
         values.put(SourceTable.COLUMN_NAME_URL_LOGOS_SMALL, source.getUrlsToLogos().getSmall());
+        values.put(SourceTable.COLUMN_NAME_URL_LOGOS_MEDIUM, source.getUrlsToLogos().getMedium());
+        values.put(SourceTable.COLUMN_NAME_URL_LOGOS_LARGE, source.getUrlsToLogos().getLarge());
         return values;
 
     }
@@ -74,7 +76,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private Source getSourceFromCursor(Cursor cursor){
         Source source = new Source();
 
-        source.setId(cursor.getString(cursor.getColumnIndex(SourceTable.COLUMN_NAME_SOURCE_ID)));
+        source.setId(cursor.getString(cursor.getColumnIndex(SourceTable._ID)));
         source.setName(cursor.getString(cursor.getColumnIndex(SourceTable.COLUMN_NAME_NAME)));
         source.setDescription(cursor.getString(cursor.getColumnIndex(SourceTable.COLUMN_NAME_DESCRIPTION)));
         source.setCategory(cursor.getString(cursor.getColumnIndex(SourceTable.COLUMN_NAME_CATEGORY)));
@@ -83,7 +85,9 @@ public class DbHelper extends SQLiteOpenHelper {
         source.setUrl(cursor.getString(cursor.getColumnIndex(SourceTable.COLUMN_NAME_URL)));
 
         Source.UrlToLogos urlToLogos = new Source.UrlToLogos();
-        urlToLogos.setMedium(cursor.getString(cursor.getColumnIndex(SourceTable.COLUMN_NAME_URL_LOGOS_SMALL)));
+        urlToLogos.setSmall(cursor.getString(cursor.getColumnIndex(SourceTable.COLUMN_NAME_URL_LOGOS_SMALL)));
+        urlToLogos.setMedium(cursor.getString(cursor.getColumnIndex(SourceTable.COLUMN_NAME_URL_LOGOS_MEDIUM)));
+        urlToLogos.setLarge(cursor.getString(cursor.getColumnIndex(SourceTable.COLUMN_NAME_URL_LOGOS_LARGE)));
         source.setUrlsToLogos(urlToLogos);
 
         String[] sortByAvail = Util.getListOfStringsFromString(cursor.getString(
@@ -118,7 +122,7 @@ public class DbHelper extends SQLiteOpenHelper {
         Source source;
 
         Cursor cursor = db.query(SourceTable.TABLE_NAME, SourceTable.ARRAY_OF_COLUMN_NAMES,
-                SourceTable.COLUMN_NAME_SOURCE_ID + "=?",
+                SourceTable._ID + "=?",
                 new String[]{sourceId},
                 null,
                 null,

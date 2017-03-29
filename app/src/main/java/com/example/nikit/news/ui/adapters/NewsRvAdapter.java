@@ -4,12 +4,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.nikit.news.R;
 //import com.example.nikit.news.entities.Article;
 import com.example.nikit.news.entities.NewsEntity;
+import com.example.nikit.news.firebase.FirebaseDbHelper;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -68,7 +70,8 @@ public class NewsRvAdapter extends RecyclerView.Adapter<NewsRvAdapter.ArticleVie
         private TextView tvArticleTitle;
         private ImageView ivArticleImage;
         private TextView tvArticleDesc;
-        private TextView tvSourceId;
+        private Button tbLike;
+        private FirebaseDbHelper dbHelper = new FirebaseDbHelper();
 
         public ArticleViewHolder(View itemView) {
             super(itemView);
@@ -76,14 +79,21 @@ public class NewsRvAdapter extends RecyclerView.Adapter<NewsRvAdapter.ArticleVie
             tvArticleTitle = (TextView)itemView.findViewById(R.id.tv_article_title);
             tvArticleDesc = (TextView)itemView.findViewById(R.id.tv_article_desc);
             ivArticleImage = (ImageView)itemView.findViewById(R.id.iv_article_image);
-            tvSourceId = (TextView)itemView.findViewById(R.id.tv_source_id);
+            tbLike = (Button) itemView.findViewById(R.id.bt_like);
+
         }
 
-        public void bindArticle(NewsEntity.Article article){
+        public void bindArticle(final NewsEntity.Article article){
             tvArticleTitle.setText(article.getTitle());
             tvArticleDesc.setText(article.getDescription());
             Picasso.with(itemView.getContext()).load(article.getUrlToImage()).into(ivArticleImage);
-            tvSourceId.setText(article.getSourceId());
+            tbLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dbHelper.pushLikedNews(article);
+                }
+            });
         }
+
     }
 }

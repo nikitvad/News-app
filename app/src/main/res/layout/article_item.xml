@@ -24,9 +24,22 @@
         android:id="@+id/tv_article_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <TextView
-        android:id="@+id/tv_source_id"
-        android:text="test sdsdsd"
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layoutDirection="rtl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+        <Button
+            android:background="@drawable/share_ico"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+        <Button
+            android:id="@+id/bt_like"
+            android:background="@drawable/like_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+    </LinearLayout>
 </LinearLayout>

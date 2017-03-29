@@ -6,14 +6,10 @@ import java.util.ArrayList;
 
 public class MyClass {
     public static void main(String[] args) {
-        String[] strings = new String[]{"latest", "top", "popular"};
+        String s = " http://www.bbc.co.uk/news/uk-#po*[lit]ics-39422353";
+        String s2 = s.replaceAll("[.\\[\\]#*]", "_");
 
-        String sortBy = "top\nlatest\npopular";
-
-        System.out.println(util.getListOfStringsFromString(sortBy)[0]);
-        System.out.println("sdfsdf");
-        System.out.println(util.getStringFromArrayOfString(strings));
-
+        System.out.println(s2);
     }
 
 }
