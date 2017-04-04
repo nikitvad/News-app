@@ -18,13 +18,12 @@ import android.widget.Toast;
 import com.example.nikit.news.R;
 import com.example.nikit.news.api.ApiClient;
 import com.example.nikit.news.api.SourcesResponse;
-import com.example.nikit.news.database.DbHelper;
+import com.example.nikit.news.database.SqLiteDbHelper;
 import com.example.nikit.news.entities.Source;
 import com.example.nikit.news.ui.adapters.SourcesRvAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Response;
 
@@ -37,7 +36,7 @@ public class SourcesFromDb extends Fragment {
     private RecyclerView rvSourcesList;
     private final SourcesRvAdapter adapter;
 
-    private DbHelper dbHelper;
+    private SqLiteDbHelper sqLiteDbHelper;
 
     public SourcesFromDb() {
         adapter = new SourcesRvAdapter();
@@ -61,7 +60,7 @@ public class SourcesFromDb extends Fragment {
         rvSourcesList.setAdapter(adapter);
         rvSourcesList.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        dbHelper = new DbHelper(getContext());
+        sqLiteDbHelper = new SqLiteDbHelper(getContext());
 
         btUpdateDb.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,9 +74,9 @@ public class SourcesFromDb extends Fragment {
         btShowData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SQLiteDatabase db = dbHelper.getReadableDatabase();
+                SQLiteDatabase db = sqLiteDbHelper.getReadableDatabase();
                 ArrayList<Source> sources = new ArrayList<Source>();
-                dbHelper.loadSourceList(db, sources);
+                sqLiteDbHelper.getAllSources(db, sources);
                 adapter.swapData(sources);
                 Log.d("dbwork", sources.toString());
             }
@@ -93,8 +92,8 @@ public class SourcesFromDb extends Fragment {
             try {
                 Response<SourcesResponse> response = ApiClient.getInstance().getSources(null, null, null).execute();
                 if(response.isSuccessful() && response.body()!=null){
-                    SQLiteDatabase db = dbHelper.getWritableDatabase();
-                    dbHelper.insertSource(db, response.body().getSources());
+                    SQLiteDatabase db = sqLiteDbHelper.getWritableDatabase();
+                    sqLiteDbHelper.insertSource(db, response.body().getSources());
                     db.close();
                     Log.d("dbwork", "inserted data");
                 }

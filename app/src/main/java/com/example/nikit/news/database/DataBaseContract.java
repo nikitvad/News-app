@@ -8,14 +8,12 @@ import android.provider.BaseColumns;
 
 public final class DataBaseContract {
 
-    public static final int DB_VERSION = 3;
+    public static final int DB_VERSION = 8;
     public static final String DB_NAME = "news_db.db";
     public static final String TEXT_TYPE = " TEXT";
     public static final String COMMA_SEP = ",";
     public static final String REAL_TYPE = " REAL";
-    public static final String INTEGER_TYPE = " INTEGER";
-    public static final String NUMERIC_TYPE = " BIGINT";
-
+    public static final String BOOL_TYPE = " BOOLEAN";
 
     public DataBaseContract(){
     }
@@ -42,7 +40,6 @@ public final class DataBaseContract {
                                                                 COLUMN_NAME_URL_LOGOS_MEDIUM, COLUMN_NAME_URL_LOGOS_LARGE,
                                                                 COLUMN_NAME_SORT_BY_AVAILABLE};
 
-
         public static final String DELETE_TABLE = "DROP TABLE " + TABLE_NAME;
         public static final String CREATE_TABLE = "CREATE TABLE " +
                 TABLE_NAME + " ("+
@@ -58,4 +55,45 @@ public final class DataBaseContract {
                 COLUMN_NAME_URL_LOGOS_LARGE + TEXT_TYPE + COMMA_SEP +
                 COLUMN_NAME_SORT_BY_AVAILABLE + TEXT_TYPE +" )";
     }
+
+
+    public static abstract class NewsTable implements BaseColumns {
+
+        public static final String TABLE_NAME = "NEWSES";
+        public static final String COLUMN_NAME_AUTHOR = "author";
+        public static final String COLUMN_NAME_TITLE = "title";
+        public static final String COLUMN_NAME_DESCRIPTION = "description";
+        public static final String COLUMN_NAME_URL ="url";
+        public static final String COLUMN_NAME_URL_IMAGE = "url_to_image";
+        public static final String COLUMN_NAME_PUBLISHED_AT = "published_at";
+        public static final String COLUMN_NAME_SOURCE_ID = "source_id";
+
+        public static final String[] ARRAY_OF_COLUMN_NAMES = {_ID,  COLUMN_NAME_AUTHOR, COLUMN_NAME_TITLE,
+                                                                COLUMN_NAME_DESCRIPTION, COLUMN_NAME_URL,
+                                                            COLUMN_NAME_URL_IMAGE, COLUMN_NAME_PUBLISHED_AT,
+                                                            COLUMN_NAME_SOURCE_ID};
+
+
+        public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+        public static final String CREATE_TABLE = "CREATE TABLE " +
+                TABLE_NAME + " ("+
+                _ID + " TEXT PRIMARY KEY, " +
+                COLUMN_NAME_AUTHOR + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_URL + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_URL_IMAGE + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_PUBLISHED_AT + TEXT_TYPE + COMMA_SEP +
+                COLUMN_NAME_SOURCE_ID + TEXT_TYPE + " )";
+    }
+
+    public abstract class LikedNewsTable implements BaseColumns {
+        public static final String TABLE_NAME = "liked_news";
+
+        public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+        public static final String CREATE_TABLE = "CREATE TABLE " +
+                TABLE_NAME + " (" +
+                _ID + " TEXT PRIMARY KEY)";
+    }
+
 }

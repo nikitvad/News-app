@@ -7,7 +7,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.nikit.news.ui.activities.LoginActivity;
-import com.example.nikit.news.ui.activities.LoginActivityV2;
 
 /**
  * Created by nikit on 26.03.2017.
@@ -24,7 +23,7 @@ public class SetupActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_item_login:{
-                Intent intent = new Intent(getApplicationContext(), LoginActivityV2.class);
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
             }
         }

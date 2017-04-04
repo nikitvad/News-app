@@ -35,9 +35,9 @@
             android:background="@drawable/share_ico"
             android:layout_width="50dp"
             android:layout_height="50dp" />
-        <Button
-            android:id="@+id/bt_like"
-            android:background="@drawable/like_button"
+        <ImageView
+            android:id="@+id/iv_like"
+            android:src="@drawable/like_button"
             android:layout_width="50dp"
             android:layout_height="50dp" />
 

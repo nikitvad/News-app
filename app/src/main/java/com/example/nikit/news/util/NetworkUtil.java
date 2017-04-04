@@ -1,11 +1,15 @@
 package com.example.nikit.news.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 
 import com.example.nikit.news.Constants;
 import com.example.nikit.news.api.ApiClient;
-import com.example.nikit.news.entities.NewsEntity;
+import com.example.nikit.news.entities.News;
 
 import java.io.IOException;
 
@@ -22,13 +26,13 @@ public class NetworkUtil {
         this.context = context;
     }
 
-    public static NewsEntity getNewsFromSource(String sourceId, @Nullable String sortBy){
+    public static News getNewsFromSource(String sourceId, @Nullable String sortBy){
         try {
-            Response<NewsEntity> response = ApiClient.getInstance()
+            Response<News> response = ApiClient.getInstance()
                     .getNewsEntity(sourceId, sortBy, Constants.API_KEY).execute();
 
             if(response.isSuccessful() && response.body()!=null){
-                for(NewsEntity.Article article: response.body().getArticles()){
+                for(News.Article article: response.body().getArticles()){
                     article.setSourceId(sourceId);
                 }
                 return response.body();
@@ -39,6 +43,12 @@ public class NetworkUtil {
         return null;
     }
 
+    public static boolean isNetworkAvailable(Activity activity) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 /*
     public HashMap<String, NewsEntity> getArticlesByCategory(String category){
         ArrayList<Source> sources = new ArrayList<>();

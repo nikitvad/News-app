@@ -3,7 +3,7 @@ package com.example.nikit.news.util;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.nikit.news.entities.NewsEntity;
+import com.example.nikit.news.entities.News;
 import com.example.nikit.news.entities.Source;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -87,11 +87,11 @@ public class JsonUtil {
 
     }
 
-    public static NewsEntity getNewsFromJsonString(String jsonString){
-        NewsEntity news = new NewsEntity();
+    public static News getNewsFromJsonString(String jsonString){
+        News news = new News();
         if(jsonString!=null) {
             Gson gson = new Gson();
-            news = gson.fromJson(jsonString, NewsEntity.class);
+            news = gson.fromJson(jsonString, News.class);
             return news;
         }else return null;
     }

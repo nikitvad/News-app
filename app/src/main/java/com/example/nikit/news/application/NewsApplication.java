@@ -2,6 +2,8 @@ package com.example.nikit.news.application;
 
 import android.app.Application;
 
+import com.example.nikit.news.database.DatabaseManager;
+import com.example.nikit.news.database.SqLiteDbHelper;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -15,6 +17,7 @@ public class NewsApplication extends Application {
     public void onCreate() {
         super.onCreate();
         FirebaseApp.initializeApp(getApplicationContext());
+        DatabaseManager.initializeInstance(new SqLiteDbHelper(getApplicationContext()));
     }
     @Override
     public void onTerminate() {

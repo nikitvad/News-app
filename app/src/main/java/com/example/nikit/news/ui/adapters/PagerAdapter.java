@@ -26,6 +26,13 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         mFragmentTitleList.add(title);
     }
 
+    public Fragment getFragmentByPos(int pos){
+        if(pos<mFragmentList.size()){
+            return mFragmentList.get(pos);
+        }
+        return null;
+    }
+
     public CharSequence getPageTitle(int position){
         return mFragmentTitleList.get(position);
     }

@@ -1,6 +1,7 @@
 package com.example.nikit.news.ui.fragments;
 
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,13 +12,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.example.nikit.news.R;
-import com.example.nikit.news.entities.NewsEntity;
+import com.example.nikit.news.database.DatabaseManager;
+import com.example.nikit.news.database.SqLiteDbHelper;
+import com.example.nikit.news.entities.News;
 import com.example.nikit.news.ui.adapters.NewsRvAdapter;
 import com.example.nikit.news.util.NetworkUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -29,18 +32,33 @@ import java.util.Map;
 public class RetrofitFragment extends Fragment {
     private RecyclerView rvNews;
     private NewsRvAdapter newsRvAdapter;
-    private Button btTouch;
     HashMap<String, String> resourceSortBy = new HashMap<>();
+
+    private SQLiteDatabase database;
+    private SqLiteDbHelper sqLiteDbHelper;
     public RetrofitFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        sqLiteDbHelper = new SqLiteDbHelper(getContext());
         return inflater.inflate(R.layout.fragment_retrofit, container, false);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        DatabaseManager.getInstance().closeDatabase();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        database = DatabaseManager.getInstance().openDatabase();
+
     }
 
     @Override
@@ -51,52 +69,82 @@ public class RetrofitFragment extends Fragment {
         rvNews.setAdapter(newsRvAdapter);
         rvNews.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        btTouch = (Button)view.findViewById(R.id.bt_touch);
-
         resourceSortBy.put("abc-news-au", "top");
         resourceSortBy.put("bild", "top");
 
-
-        btTouch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new loadNewsAsyncTask().execute();
-            }
-        });
+        new LoadNewsAsyncTask().execute();
 
     }
 
+    public void updateContent(){
+        if(isAdded()) {
+            new LoadNewsAsyncTask().execute();
+        }
+    }
 
-    class loadNewsAsyncTask extends AsyncTask<Void, NewsEntity, Void>{
-        private HashMap<String, NewsEntity> newsEntityHashMap;
-
+    class LoadNewsAsyncTask extends AsyncTask<Void, News, Void>{
+        private HashMap<String, News> newsEntityHashMap;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
             resourceSortBy.put("abc-news-au", "top");
             resourceSortBy.put("bild", "top");
             resourceSortBy.put("associated-press", "top");
             resourceSortBy.put("bbc-sport", "top");
+
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            new LoadArticlesFromDbAsync().execute();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
 
-            Iterator<Map.Entry<String, String>> iterator = resourceSortBy.entrySet().iterator();
-            while(iterator.hasNext()){
-                Map.Entry<String, String> pair = iterator.next();
-                NewsEntity entity = NetworkUtil.getNewsFromSource(pair.getKey(), pair.getValue());
+            if(NetworkUtil.isNetworkAvailable(getActivity())){
+                Iterator<Map.Entry<String, String>> iterator = resourceSortBy.entrySet().iterator();
+                while(iterator.hasNext()){
+                    Map.Entry<String, String> pair = iterator.next();
+                    News news = NetworkUtil.getNewsFromSource(pair.getKey(), pair.getValue());
 
-                Log.d("entity", entity.toString());
-                publishProgress(entity);
+                    sqLiteDbHelper.insertArticles(database, news.getArticles());
+                }
+
+            }else{
+                return null;
             }
+
             return null;
         }
 
         @Override
-        protected void onProgressUpdate(NewsEntity... values) {
+        protected void onProgressUpdate(News... values) {
             newsRvAdapter.addArticles(values[0].getArticles());
+        }
+    }
+
+    class LoadArticlesFromDbAsync extends AsyncTask<Void, Void, Void>{
+        private ArrayList<News.Article> articles;
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(articles.size()>0){
+                newsRvAdapter.swapData(articles);
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            articles = sqLiteDbHelper.getAllArticles(database);
+            return null;
         }
     }
 }

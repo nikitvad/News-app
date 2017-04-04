@@ -1,18 +1,19 @@
 package com.example.nikit.news.entities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by nikit on 12.03.2017.
  */
 
-public class NewsEntity {
+public class News {
     private String status;
     private String source;
     private String sortBy;
     private ArrayList<Article> articles;
 
-    public NewsEntity() {
+    public News() {
         articles = new ArrayList<>();
     }
 
@@ -50,7 +51,7 @@ public class NewsEntity {
 
     @Override
     public String toString() {
-        return "NewsEntity{" +
+        return "News{" +
                 "status='" + status + '\'' +
                 ", source='" + source + '\'' +
                 ", sortBy='" + sortBy + '\'' +
@@ -62,21 +63,44 @@ public class NewsEntity {
         return articles.size();
     }
 
-    public class Article {
+    public static class Article {
+        private String articleId;
         private String author;
         private String title;
         private String description;
         private String url;
         private String urlToImage;
         private String publishedAt;
-        private CharSequence sourceId;
+        private CharSequence source;
+        private boolean likedCurrentUser = false;
 
-        public CharSequence getSourceId() {
-            return sourceId;
+        public void setSource(CharSequence source) {
+            this.source = source;
+        }
+
+        public String getArticleId() {
+            if(articleId!=null){
+                return articleId;
+            }else{
+                articleId = url.replaceAll("[\\.#\\$\\[\\]/]" ,"");
+            }
+            return articleId;
+        }
+
+        public boolean isLikedCurrentUser() {
+            return likedCurrentUser;
+        }
+
+        public void setLikedCurrentUser(boolean likedCurrentUser) {
+            this.likedCurrentUser = likedCurrentUser;
+        }
+
+        public CharSequence getSource() {
+            return source;
         }
 
         public void setSourceId(String sourceId) {
-            this.sourceId = sourceId;
+            this.source = sourceId;
         }
 
         public String getAuthor() {
@@ -138,7 +162,22 @@ public class NewsEntity {
                     ", publishedAt='" + publishedAt + '\'' +
                     '}';
         }
+
+
+        public HashMap<String, Object> toMap(){
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("title", title);
+            hashMap.put("description", description);
+            hashMap.put("url", url);
+            hashMap.put("urlToImage", urlToImage);
+            hashMap.put("publishedAt", publishedAt);
+            hashMap.put("author", author);
+
+            //hashMap.put("likes", like);
+            return hashMap;
+        }
     }
+
 
 
 }

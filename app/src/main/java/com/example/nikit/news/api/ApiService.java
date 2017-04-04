@@ -3,7 +3,7 @@ package com.example.nikit.news.api;
 import android.support.annotation.Nullable;
 
 //import com.example.nikit.news.entities.Article;
-import com.example.nikit.news.entities.NewsEntity;
+import com.example.nikit.news.entities.News;
 import com.example.nikit.news.entities.Source;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import retrofit2.http.Query;
 
 public interface ApiService {
     @GET("v1/articles")
-    Call<NewsEntity> getNewsEntity(@Query("source") String sourceId,
+    Call<News> getNewsEntity(@Query("source") String sourceId,
                                    @Nullable @Query("sortBy") String sortBy,
                                    @Query("apiKey") String apiKey);
     /*
