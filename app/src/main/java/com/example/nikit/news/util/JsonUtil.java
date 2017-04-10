@@ -27,15 +27,13 @@ import java.util.ArrayList;
 
 public class JsonUtil {
     //private static String jsonString;
-
-
-    public static String loadJsonString(String urlAddress){
+    public static String loadJsonString(String urlAddress) {
         //new LoadJsonAsyncTask().execute(urlAddress);
         String jsonStringResult = "";
 
         try {
             URL url = new URL(urlAddress);
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
             InputStream is = connection.getInputStream();
@@ -44,56 +42,50 @@ public class JsonUtil {
             StringBuffer buffer = new StringBuffer();
             String line;
 
-            while((line=reader.readLine())!=null){
+            while ((line = reader.readLine()) != null) {
                 buffer.append(line);
             }
             jsonStringResult = buffer.toString();
-            Log.d("jsonString", jsonStringResult);
 
-        }catch(MalformedURLException e){
+        } catch (MalformedURLException e) {
             e.printStackTrace();
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return jsonStringResult;
     }
 
 
-    public static ArrayList<Source> getSourcesFromJson(String jsonString){
+    public static ArrayList<Source> getSourcesFromJson(String jsonString) {
         String sourcesJsonString;
         ArrayList<Source> sourcesResult;
         try {
             JSONObject jsonObject = new JSONObject(jsonString);
             sourcesJsonString = jsonObject.getJSONArray("sources").toString();
-            if(sourcesJsonString!=null && sourcesJsonString.length()>0){
+            if (sourcesJsonString != null && sourcesJsonString.length() > 0) {
                 Gson gson = new Gson();
-                Type ArrayListSourceType = new TypeToken<ArrayList<Source>>(){}.getType();
+                Type ArrayListSourceType = new TypeToken<ArrayList<Source>>() {
+                }.getType();
                 sourcesResult = gson.fromJson(sourcesJsonString, ArrayListSourceType);
 
-                Log.d("jsonString", sourcesResult.size()+"");
-                for(Source source: sourcesResult){
-                    Log.d("jsonString", source.toString());
-                }
-
-
-                if(sourcesResult.size()>0){
+                if (sourcesResult.size() > 0) {
                     return sourcesResult;
                 }
             }
-        }catch (JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;
 
     }
 
-    public static News getNewsFromJsonString(String jsonString){
+    public static News getNewsFromJsonString(String jsonString) {
         News news = new News();
-        if(jsonString!=null) {
+        if (jsonString != null) {
             Gson gson = new Gson();
             news = gson.fromJson(jsonString, News.class);
             return news;
-        }else return null;
+        } else return null;
     }
 
 }

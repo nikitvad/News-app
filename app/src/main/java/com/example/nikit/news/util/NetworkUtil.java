@@ -22,22 +22,22 @@ import retrofit2.Response;
 public class NetworkUtil {
     private Context context;
 
-    public NetworkUtil(Context context){
+    public NetworkUtil(Context context) {
         this.context = context;
     }
 
-    public static News getNewsFromSource(String sourceId, @Nullable String sortBy){
+    public static News getNewsFromSource(String sourceId, @Nullable String sortBy) {
         try {
             Response<News> response = ApiClient.getInstance()
                     .getNewsEntity(sourceId, sortBy, Constants.API_KEY).execute();
 
-            if(response.isSuccessful() && response.body()!=null){
-                for(News.Article article: response.body().getArticles()){
+            if (response.isSuccessful() && response.body() != null) {
+                for (News.Article article : response.body().getArticles()) {
                     article.setSourceId(sourceId);
                 }
                 return response.body();
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -49,23 +49,6 @@ public class NetworkUtil {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-/*
-    public HashMap<String, NewsEntity> getArticlesByCategory(String category){
-        ArrayList<Source> sources = new ArrayList<>();
-                try {
-                    Response<Source> response = ApiClient.getInstance().getSources(category, null, null).execute();
-                    if(response.isSuccessful() && response!=null){
-                        sources.add(response.body());
-                    }
-                }catch (IOException e){
-                    e.printStackTrace();
-                }
-
-        return null;
-    }
-    */
-
-
 
 
 }

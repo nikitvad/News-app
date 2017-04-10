@@ -77,7 +77,6 @@ public class FirebaseDbHelper {
                     if (article != null) {
                         articles.add(article);
                     }
-                    Log.d("synchronizeUserDatass", article.toString());
                 }
 
                 @Override

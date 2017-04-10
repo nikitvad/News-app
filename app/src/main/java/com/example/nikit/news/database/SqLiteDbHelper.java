@@ -13,6 +13,7 @@ import com.example.nikit.news.database.DataBaseContract.SourceTable;
 import com.example.nikit.news.database.DataBaseContract.NewsTable;
 import com.example.nikit.news.database.DataBaseContract.LikedNewsTable;
 import com.example.nikit.news.util.Util;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ import java.util.List;
 
 public class SqLiteDbHelper extends SQLiteOpenHelper {
 
-    public SqLiteDbHelper(Context context){
+    public SqLiteDbHelper(Context context) {
         super(context, DataBaseContract.DB_NAME, null, DataBaseContract.DB_VERSION);
     }
 
@@ -32,12 +33,13 @@ public class SqLiteDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DataBaseContract.SourceTable.CREATE_TABLE);
         db.execSQL(DataBaseContract.NewsTable.CREATE_TABLE);
+        db.execSQL(LikedNewsTable.CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        if(oldVersion != newVersion ){
+        if (oldVersion != newVersion) {
             db.execSQL(DataBaseContract.SourceTable.DELETE_TABLE);
             db.execSQL(DataBaseContract.SourceTable.CREATE_TABLE);
 
@@ -47,11 +49,10 @@ public class SqLiteDbHelper extends SQLiteOpenHelper {
             db.execSQL(LikedNewsTable.DELETE_TABLE);
             db.execSQL(LikedNewsTable.CREATE_TABLE);
 
-            Log.d("database", "database upgraded");
         }
     }
 
-    private ContentValues getContentValuesFormSource(Source source){
+    private ContentValues getContentValuesFormSource(Source source) {
         ContentValues values = new ContentValues();
         values.put(SourceTable._ID, source.getId());
         values.put(SourceTable.COLUMN_NAME_NAME, source.getName());
@@ -68,7 +69,7 @@ public class SqLiteDbHelper extends SQLiteOpenHelper {
 
     }
 
-    private ContentValues getContentValuesFromArticle(News.Article article){
+    private ContentValues getContentValuesFromArticle(News.Article article) {
         ContentValues values = new ContentValues();
         values.put(NewsTable._ID, article.getArticleId());
         values.put(NewsTable.COLUMN_NAME_AUTHOR, article.getAuthor());
@@ -81,28 +82,28 @@ public class SqLiteDbHelper extends SQLiteOpenHelper {
         return values;
     }
 
-    public void insertArticle(SQLiteDatabase db, News.Article article){
+    public void insertArticle(SQLiteDatabase db, News.Article article) {
         db.insert(NewsTable.TABLE_NAME, null, getContentValuesFromArticle(article));
     }
 
-    public void insertArticles(SQLiteDatabase db, List<News.Article> articles){
-        for(News.Article article: articles){
+    public void insertArticles(SQLiteDatabase db, List<News.Article> articles) {
+        for (News.Article article : articles) {
             db.insert(NewsTable.TABLE_NAME, null, getContentValuesFromArticle(article));
         }
     }
 
-    public void insertSource(SQLiteDatabase db, Source source){
+    public void insertSource(SQLiteDatabase db, Source source) {
         db.insert(SourceTable.TABLE_NAME, null, getContentValuesFormSource(source));
     }
 
-    public void insertSource(SQLiteDatabase db, List<Source> sourceList){
-        for(Source source: sourceList){
-          getContentValuesFormSource(source);
+    public void insertSource(SQLiteDatabase db, List<Source> sourceList) {
+        for (Source source : sourceList) {
+            getContentValuesFormSource(source);
             db.insert(SourceTable.TABLE_NAME, null, getContentValuesFormSource(source));
         }
     }
 
-    private News.Article getArticleFromCursor(Cursor cursor){
+    private News.Article getArticleFromCursor(Cursor cursor) {
         News.Article article = new News.Article();
         article.setAuthor(cursor.getString(cursor.getColumnIndex(NewsTable.COLUMN_NAME_AUTHOR)));
         article.setTitle(cursor.getString(cursor.getColumnIndex(NewsTable.COLUMN_NAME_TITLE)));
@@ -115,26 +116,25 @@ public class SqLiteDbHelper extends SQLiteOpenHelper {
         return article;
     }
 
-    public ArrayList<News.Article> getAllArticles(SQLiteDatabase db){
+    public ArrayList<News.Article> getAllArticles(SQLiteDatabase db) {
         ArrayList<News.Article> articles = new ArrayList<>();
-        Cursor cursor =  db.query(DataBaseContract.NewsTable.TABLE_NAME,
+        Cursor cursor = db.query(DataBaseContract.NewsTable.TABLE_NAME,
                 DataBaseContract.NewsTable.ARRAY_OF_COLUMN_NAMES,
                 null, null, null, null, null);
 
-        if(cursor.moveToFirst()){
-            do{
+        if (cursor.moveToFirst()) {
+            do {
                 News.Article article = getArticleFromCursor(cursor);
-                article.setLikedCurrentUser(isLikedNewsContain(db, article.getArticleId()));
-
+                article.setLiked(isLikedNewsContain(db, article.getArticleId()));
                 articles.add(article);
-            }while (cursor.moveToNext());
+            } while (cursor.moveToNext());
             cursor.close();
         }
 
         return articles;
     }
 
-    private Source getSourceFromCursor(Cursor cursor){
+    private Source getSourceFromCursor(Cursor cursor) {
         Source source = new Source();
 
         source.setId(cursor.getString(cursor.getColumnIndex(SourceTable._ID)));
@@ -152,67 +152,83 @@ public class SqLiteDbHelper extends SQLiteOpenHelper {
         source.setUrlsToLogos(urlToLogos);
 
         String[] sortByAvail = Util.getListOfStringsFromString(cursor.getString(
-                    cursor.getColumnIndex(SourceTable.COLUMN_NAME_SORT_BY_AVAILABLE)));
+                cursor.getColumnIndex(SourceTable.COLUMN_NAME_SORT_BY_AVAILABLE)));
 
         source.setSortBysAvailable(sortByAvail);
 
         return source;
     }
 
-    public void getAllSources(SQLiteDatabase db, List<Source> sourceList){
+    public HashMap<Integer, String> getSourcesId(SQLiteDatabase db) {
+        HashMap<Integer, String> result = new HashMap<>();
+        Cursor cursor = db.query(SourceTable.TABLE_NAME,
+                new String[]{SourceTable._ID, SourceTable.COLUMN_NAME_NAME},
+                null, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex(SourceTable._ID));
+                String name = cursor.getString(cursor.getColumnIndex(SourceTable.COLUMN_NAME_NAME));
+                result.put(id, name);
+            } while (cursor.moveToNext());
+        }
+        return result;
+    }
+
+    public void getAllSources(SQLiteDatabase db, List<Source> sourceList) {
         Cursor cursor = db.query(DataBaseContract.SourceTable.TABLE_NAME,
                 DataBaseContract.SourceTable.ARRAY_OF_COLUMN_NAMES,
                 null, null, null, null, null);
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
 
             do {
                 Source source = getSourceFromCursor(cursor);
                 sourceList.add(source);
-            }while(cursor.moveToNext());
+            } while (cursor.moveToNext());
 
             cursor.close();
         }
     }
 
 
-    public boolean isLikedNewsContain(SQLiteDatabase db, String newsId){
+    public boolean isLikedNewsContain(SQLiteDatabase db, String newsId) {
         Cursor cursor = db.query(LikedNewsTable.TABLE_NAME,
                 new String[]{LikedNewsTable._ID},
                 LikedNewsTable._ID + "=?",
                 new String[]{newsId},
                 null, null, null);
 
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             if (cursor.getString(0).equals(newsId)) {
                 return true;
             }
         }
-       return false;
+        return false;
     }
 
-    public void addLikedNews(SQLiteDatabase db, String newsId){
+    public void addLikedNews(SQLiteDatabase db, String newsId) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(LikedNewsTable._ID, newsId);
         db.insert(LikedNewsTable.TABLE_NAME, null, contentValues);
     }
-    public void removeLikedNews(SQLiteDatabase db, String newsId){
+
+    public void removeLikedNews(SQLiteDatabase db, String newsId) {
         db.delete(LikedNewsTable.TABLE_NAME,
                 LikedNewsTable._ID + "=?",
                 new String[]{newsId});
     }
 
-    public void addAllLikedNewses(SQLiteDatabase db, HashMap<String, String> newsIds){
+    public void addAllLikedNewses(SQLiteDatabase db, HashMap<String, String> newsIds) {
 
         ContentValues contentValues;
-        for(String item: newsIds.keySet()){
+        for (String item : newsIds.keySet()) {
             contentValues = new ContentValues();
             contentValues.put(LikedNewsTable._ID, item);
             db.insert(LikedNewsTable.TABLE_NAME, null, contentValues);
         }
     }
 
-    public void clearSourceTable(SQLiteDatabase db){
+    public void clearSourceTable(SQLiteDatabase db) {
         db.delete(SourceTable.TABLE_NAME, null, null);
     }
 
@@ -220,7 +236,7 @@ public class SqLiteDbHelper extends SQLiteOpenHelper {
         db.delete(LikedNewsTable.TABLE_NAME, null, null);
     }
 
-    public void clearNewsTable(SQLiteDatabase db){
+    public void clearNewsTable(SQLiteDatabase db) {
         db.delete(NewsTable.TABLE_NAME, null, null);
     }
 }

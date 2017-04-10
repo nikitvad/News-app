@@ -20,18 +20,12 @@ import retrofit2.http.Query;
 public interface ApiService {
     @GET("v1/articles")
     Call<News> getNewsEntity(@Query("source") String sourceId,
-                                   @Nullable @Query("sortBy") String sortBy,
-                                   @Query("apiKey") String apiKey);
-    /*
-    @GET("v1/sources")
-    Call<Source> getSources(@Nullable @Query("category") String category,
-                            @Nullable @Query("language") String language,
-                            @Nullable @Query("country") String country);
+                             @Nullable @Query("sortBy") String sortBy,
+                             @Query("apiKey") String apiKey);
 
-          */
     @GET("v1/sources")
     Call<SourcesResponse> getSources(@Nullable @Query("category") String category,
-                                    @Nullable @Query("language") String language,
-                                    @Nullable @Query("country") String country);
+                                     @Nullable @Query("language") String language,
+                                     @Nullable @Query("country") String country);
 
 }

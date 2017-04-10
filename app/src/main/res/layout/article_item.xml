@@ -1,45 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="35dp">
+    android:layout_marginBottom="35dp"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/tv_article_title"
-        android:text="test Title"
         style="@style/TextViewArticleTitle"
-        android:layout_gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="test Title" />
+
     <ImageView
-        android:src="@drawable/image1"
         android:id="@+id/iv_article_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:minHeight="300dp"
-        />
-    
+        android:layout_height="@dimen/news_image_height" />
+
     <TextView
         android:id="@+id/tv_article_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-
     <LinearLayout
-        android:orientation="horizontal"
-        android:layoutDirection="rtl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
         <Button
-            android:background="@drawable/share_ico"
             android:layout_width="50dp"
-            android:layout_height="50dp" />
+            android:layout_height="50dp"
+            android:background="#fff" />
+
         <ImageView
             android:id="@+id/iv_like"
-            android:src="@drawable/like_button"
             android:layout_width="50dp"
-            android:layout_height="50dp" />
+            android:layout_height="50dp"
+            android:src="@drawable/ic_favorite_border_black_24dp" />
 
     </LinearLayout>
 </LinearLayout>

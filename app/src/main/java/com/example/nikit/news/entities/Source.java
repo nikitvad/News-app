@@ -104,7 +104,7 @@ public class Source {
         this.sortBysAvailable = sortBysAvailable;
     }
 
-    public static class UrlToLogos{
+    public static class UrlToLogos {
         private String small;
         private String medium;
         private String large;

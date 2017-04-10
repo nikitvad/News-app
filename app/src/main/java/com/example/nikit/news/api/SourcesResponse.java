@@ -11,7 +11,6 @@ import java.util.Arrays;
 
 public class SourcesResponse {
 
-
     private String status;
     private ArrayList<Source> sources;
 
@@ -30,7 +29,6 @@ public class SourcesResponse {
     public void setSources(ArrayList<Source> sources) {
         this.sources = sources;
     }
-
 
 
 }

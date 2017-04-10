@@ -28,11 +28,12 @@ public abstract class HidingScrollListener extends RecyclerView.OnScrollListener
             scrolledDistance = 0;
         }
 
-        if((controlsVisible && dy>0) || (!controlsVisible && dy<0)) {
+        if ((controlsVisible && dy > 0) || (!controlsVisible && dy < 0)) {
             scrolledDistance += dy;
         }
     }
 
     public abstract void onHide();
+
     public abstract void onShow();
 }

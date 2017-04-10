@@ -9,15 +9,15 @@ import java.util.Collections;
 
 public class Util {
 
-    public static String getStringFromArrayOfString(String[] strings){
+    public static String getStringFromArrayOfString(String[] strings) {
         String result = "";
-        for(String item: strings){
+        for (String item : strings) {
             result = result + item + "\n";
         }
         return result;
     }
 
-    public static String[] getListOfStringsFromString(String string){
+    public static String[] getListOfStringsFromString(String string) {
         return string.split("\n");
     }
 

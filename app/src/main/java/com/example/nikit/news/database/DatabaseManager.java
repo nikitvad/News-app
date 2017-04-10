@@ -2,6 +2,7 @@ package com.example.nikit.news.database;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

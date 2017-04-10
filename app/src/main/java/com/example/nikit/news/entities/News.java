@@ -59,7 +59,7 @@ public class News {
                 '}';
     }
 
-    public int getArticlesCount(){
+    public int getArticlesCount() {
         return articles.size();
     }
 
@@ -72,31 +72,31 @@ public class News {
         private String urlToImage;
         private String publishedAt;
         private CharSequence source;
-        private boolean likedCurrentUser = false;
-
-        public void setSource(CharSequence source) {
-            this.source = source;
-        }
+        private boolean liked = false;
 
         public String getArticleId() {
-            if(articleId!=null){
+            if (articleId != null) {
                 return articleId;
-            }else{
-                articleId = url.replaceAll("[\\.#\\$\\[\\]/]" ,"");
+            } else {
+                articleId = url.replaceAll("[\\.#\\$\\[\\]/]", "");
             }
             return articleId;
         }
 
-        public boolean isLikedCurrentUser() {
-            return likedCurrentUser;
+        public boolean isLiked() {
+            return liked;
         }
 
-        public void setLikedCurrentUser(boolean likedCurrentUser) {
-            this.likedCurrentUser = likedCurrentUser;
+        public void setLiked(boolean liked) {
+            this.liked = liked;
         }
 
         public CharSequence getSource() {
             return source;
+        }
+
+        public void setSource(CharSequence source) {
+            this.source = source;
         }
 
         public void setSourceId(String sourceId) {
@@ -164,7 +164,7 @@ public class News {
         }
 
 
-        public HashMap<String, Object> toMap(){
+        public HashMap<String, Object> toMap() {
             HashMap<String, Object> hashMap = new HashMap<>();
             hashMap.put("title", title);
             hashMap.put("description", description);
@@ -177,7 +177,6 @@ public class News {
             return hashMap;
         }
     }
-
 
 
 }

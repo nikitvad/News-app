@@ -19,6 +19,7 @@ public class NewsApplication extends Application {
         FirebaseApp.initializeApp(getApplicationContext());
         DatabaseManager.initializeInstance(new SqLiteDbHelper(getApplicationContext()));
     }
+
     @Override
     public void onTerminate() {
         super.onTerminate();
